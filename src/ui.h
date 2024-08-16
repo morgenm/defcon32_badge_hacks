@@ -15,15 +15,15 @@ struct Canvas {
 };
 
 #ifdef DISP_OLED
-	#include "oled.h"
+	#include "display/oled.h"
 #endif
 
 #ifdef DISP_LCD_WAVESHARE
-	#include "dispWaveshareLcd.h"
+	#include "display/dispWaveshareLcd.h"
 #endif
 
 #ifdef DISP_LCD_DEFCON
-	#include "dispDefcon.h"
+	#include "display/dispDefcon.h"
 #endif
 
 void uiPreGame(void);

@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include "settings.h"
 #include "memMap.h"
-#include "printf.h"
+#include "util/printf.h"
 #include "qspi.h"
 
 

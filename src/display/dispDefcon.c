@@ -1,8 +1,8 @@
 #include "hardware/regs/dreq.h"
-#include "pinoutRp2350defcon.h"
+#include "pio/pinoutRp2350defcon.h"
 #include "dispDefcon.h"
 #include "timebase.h"
-#include "printf.h"
+#include "util/printf.h"
 #include "2350.h"
 
 
@@ -22,7 +22,7 @@
 #define SIDE_SET_HAS_ENABLE_BIT				0
 #define SIDE_SET_NUM_BITS					1
 #define DEFINE_PIO_INSTRS
-#include "pioAsm.h"
+#include "pio/pioAsm.h"
 
 static uint16_t mFb[DISP_WIDTH * DISP_HEIGHT];
 static uint32_t mFbStartAddr = (uintptr_t)mFb;

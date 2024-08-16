@@ -1,6 +1,6 @@
 #include "gbCartHeader.h"
 #include <string.h>
-#include "printf.h"
+#include "util/printf.h"
 #include "gbCore.h"
 #include "mbc.h"
 #include "gb.h"

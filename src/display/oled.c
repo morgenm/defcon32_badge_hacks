@@ -1,8 +1,8 @@
 #include <string.h>
 #include "timebase.h"
-#include "printf.h"
+#include "util/printf.h"
 #include "rp2040.h"
-#include "oled.h"
+#include "display/oled.h"
 
 #define DISP_DATA_BYTES				(DISP_WIDTH * DISP_HEIGHT * DISP_BPP / 8)
 

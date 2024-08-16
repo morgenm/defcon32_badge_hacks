@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "printf.h"
+#include "util/printf.h"
 #include "gbCore.h"
 #include "mbc.h"
 

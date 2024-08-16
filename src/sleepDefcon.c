@@ -1,6 +1,6 @@
-#include "pinoutRp2350defcon.h"
+#include "pio/pinoutRp2350defcon.h"
 #include "timebase.h"
-#include "printf.h"
+#include "util/printf.h"
 #include "sleep.h"
 #include "cpu.h"
 #include "ui.h"

@@ -7,7 +7,7 @@
 
 
 #include "timebase.h"
-#include "printf.h"
+#include "util/printf.h"
 
 #define SYSTICK_BITS		24
 

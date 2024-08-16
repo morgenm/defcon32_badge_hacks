@@ -1,6 +1,6 @@
 #include <setjmp.h>
 #include "gbCore.h"
-#include "printf.h"
+#include "util/printf.h"
 #include "gb.h"
 
 /*

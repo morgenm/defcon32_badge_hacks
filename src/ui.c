@@ -1,19 +1,19 @@
 #include <stdarg.h>
 #include <string.h>
-#include "gbCartHeader.h"
+#include "gameboy/gbCartHeader.h"
 #include "settings.h"
 #include "memMap.h"
-#include "printf.h"
+#include "util/printf.h"
 #include "sleep.h"
-#include "fonts.h"
-#include "fatfs.h"
+#include "util/fonts.h"
+#include "sd/fatfs.h"
 #include "qspi.h"
 #include "cpu.h"
-#include "mbc.h"
-#include "utf.h"
+#include "gameboy/mbc.h"
+#include "util/utf.h"
 #include "ui.h"
-#include "sd.h"
-#include "gb.h"
+#include "sd/sd.h"
+#include "gameboy/gb.h"
 
 //#include "tusb.h"
 

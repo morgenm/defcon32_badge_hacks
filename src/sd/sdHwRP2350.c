@@ -1,8 +1,8 @@
 #include "hardware/regs/dreq.h"
-#include "pinoutRp2350defcon.h"
+#include "pio/pinoutRp2350defcon.h"
 #include "timebase.h"
 #include <string.h>
-#include "printf.h"
+#include "util/printf.h"
 #include "2350.h"
 #include "sdHw.h"
 #include "sd.h"

@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <string.h>
 #include "frontend.h"
-#include "printf.h"
+#include "util/printf.h"
 #include "gbCore.h"
 #include "gb.h"
 
