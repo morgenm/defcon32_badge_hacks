@@ -13,14 +13,18 @@ The firmware was originally developed by dmitrygr for Defcon 32. This is a fork 
 Run the following to compile the firmware:
 
 ```bash
-make uGB.bin
+mkdir build
+cd build
+cmake ..
+make
 ```
 
+This will give you `FIRMWARE.BIN`, which can be flashed to the badge.
+
 To flash the badge, you can do the following:
-1. Copy `uGB.bin` to the device's SD card.
-2. Rename the firmware file to `FIRMWARE.BIN` in the root directory of the SD card.
-3. Boot the device and select `Firmware Update` in the device menu.
-4. Once the status bar appears to be almost full, wait a few seconds, then reboot the device.
+1. Copy `FIRMWARE.BIN` to the badge's SD card. Make sure it's in the root directory of the card.
+2. Boot the device and select `Firmware Update` in the device menu.
+3. Once the status bar appears to be almost full, wait a few seconds, then reboot the device.
 
 ## License 
 License for non-commerical use from the original developer:

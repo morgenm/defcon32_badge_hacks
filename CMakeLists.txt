@@ -38,32 +38,32 @@ set(BIN_FILE "${CMAKE_BINARY_DIR}/FIRMWARE.BIN")
 #add_subdirectory(tinyusb)
 
 include_directories(SYSTEM ${CMAKE_SOURCE_DIR}/inc_RP2350)
-include_directories(${CMAKE_SOURCE_DIR}/src)
+include_directories(${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/src/arm)
 
 # Add source files
 set(SOURCES
     src/main_rp2350_defcon.c
     src/crt_rp2350.S
     src/timebase.c
-    src/printf.c
-    src/dispDefcon.c
-    src/utf.c
+    src/util/printf.c
+    src/display/dispDefcon.c
+    src/util/utf.c
     src/qspi2350.c
     src/ui.c
     src/settings.c
-    src/fonts.c
+    src/util/fonts.c
     src/sleepDefcon.c
-    src/sd.c
-    src/fatfs.c
-    src/sdHwRP2350.c
-    src/pioI2C.c
-    src/pioIrdaSIR.c
-    src/pioWS2812.c
-    src/gbC.c
-    src/videoC.c
-    src/mappersC.c
-    src/gb.c
-    src/mbc.c
+    src/sd/sd.c
+    src/sd/fatfs.c
+    src/sd/sdHwRP2350.c
+    src/pio/pioI2C.c
+    src/pio/pioIrdaSIR.c
+    src/pio/pioWS2812.c
+    src/gameboy/gbC.c
+    src/gameboy/videoC.c
+    src/gameboy/mappersC.c
+    src/gameboy/gb.c
+    src/gameboy/mbc.c
 )
 
 if(HQX)
