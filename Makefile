@@ -58,7 +58,9 @@ EXTRA_OBJS	+= mappersC.o
 EXTRA_OBJS += $(TINYUSB_SRC)/class/hid/hid_device.o
 EXTRA_OBJS += $(TINYUSB_SRC)/class/cdc/cdc_device.o
 #EXTRA_OBJS += $(TINYUSB_SRC)/core/usb_device.o
-EXTRA_OBJS += $(TINYUSB_SRC)/device/usbd.o
+EXTRA_OBJS += $(TINYUSB_SRC)/device/*.o
+EXTRA_OBJS += $(TINYUSB_SRC)/tusb.o
+EXTRA_OBJS += $(TINYUSB_SRC)/common/*.o
 #EXTRA_OBJS += $(TINYUSB_SRC)/core/usb_descriptors.o
 
 

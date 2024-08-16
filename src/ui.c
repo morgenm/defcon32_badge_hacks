@@ -15,7 +15,7 @@
 #include "sd.h"
 #include "gb.h"
 
-#include "tusb.h"
+//#include "tusb.h"
 
 
 #define MENU_SELECTION_CHAR				0xBB /* RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK */
@@ -1078,7 +1078,8 @@ static bool __attribute__((noinline)) uiPrvSettings(struct Canvas *cnv)		//retur
 
 static void __attribute__((noinline)) uiPrvMorgenUSBEnum(struct Canvas *cnv) {
 	uiPrvReset(cnv, false);
-	board_init();
+
+	//tusb_init();
 
 	bool usbMounted = false;
 
@@ -1113,7 +1114,7 @@ static void __attribute__((noinline)) uiPrvMorgenUSBEnum(struct Canvas *cnv) {
 		//}
 
 		// Perform enumeration
-		tud_task();
+		//tud_task();
 	}
 }
 
