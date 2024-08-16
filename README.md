@@ -21,3 +21,7 @@ To flash the badge, you can do the following:
 2. Rename the firmware file to `FIRMWARE.BIN` in the root directory of the SD card.
 3. Boot the device and select `Firmware Update` in the device menu.
 4. Once the status bar appears to be almost full, wait a few seconds, then reboot the device.
+
+## License 
+License for non-commerical use from the original developer:
+![License](license.png)
