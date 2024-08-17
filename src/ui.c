@@ -8,13 +8,14 @@
 #include "util/fonts.h"
 #include "sd/fatfs.h"
 #include "qspi.h"
-#include "cpu.h"
+#include "2350.h"
 #include "gameboy/mbc.h"
 #include "util/utf.h"
 #include "ui.h"
 #include "sd/sd.h"
 #include "gameboy/gb.h"
 
+//#include "usb.h"
 //#include "tusb.h"
 
 

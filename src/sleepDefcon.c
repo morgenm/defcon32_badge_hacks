@@ -2,7 +2,7 @@
 #include "timebase.h"
 #include "util/printf.h"
 #include "sleep.h"
-#include "cpu.h"
+#include "2350.h"
 #include "ui.h"
 
 void doSleep(void)
