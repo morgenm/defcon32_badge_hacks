@@ -1,4 +1,5 @@
 #include "pico/stdlib.h"
+#include "pico/multicore.h"
 #include "hardware/clocks.h"
 #include "hardware/resets.h"
 #include "hardware/pll.h"
@@ -11,6 +12,7 @@
 #include "timebase.h"
 #include "display.h"
 #include "ui.h"
+#include "usb.h"
 
 void ws2812SetAllBlue(void) {
     for (uint32_t i = 0; i < NUM_WS2812s; i++) {
@@ -150,6 +152,12 @@ static void gpiosConfig(bool firstTime)
 	}
 }
 
+void core1_entry() {
+	while(true) {
+		usbTask();
+	}
+}
+
 int main() {
     asm volatile("cpsie i");
 	timebaseInit();
@@ -166,6 +174,10 @@ int main() {
     dispInit(30);
     dispSetContrast(5);
     dispSetBrightness(10);
+
+	// Initialize usb
+	usbHIDInit();
+	multicore_launch_core1(core1_entry); // Setup other core to run USB task
 
     uiPreGame();
 

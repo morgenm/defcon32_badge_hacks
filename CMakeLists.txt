@@ -12,12 +12,12 @@ pico_sdk_init()
 
 # rest of your project
 # Add the source files to your project
-add_executable(${PROJECT_NAME} src/main.c src/pio/pioWS2812.c src/timebase.c src/display.c src/ui.c src/chars.c src/fonts.c src/utf.c src/printf.c src/input.c)
+add_executable(${PROJECT_NAME} src/main.c src/pio/pioWS2812.c src/timebase.c src/display.c src/ui.c src/chars.c src/fonts.c src/utf.c src/printf.c src/input.c src/usb_descriptors.c src/usb.c)
 
 target_include_directories(${PROJECT_NAME} PRIVATE src/)
 
 # Link the Pico SDK libraries to your project
-target_link_libraries(${PROJECT_NAME} pico_stdlib hardware_spi hardware_pwm hardware_pio hardware_dma)
+target_link_libraries(${PROJECT_NAME} pico_stdlib pico_multicore hardware_spi hardware_pwm hardware_pio hardware_dma pico_unique_id tinyusb_device tinyusb_board)
 
 # Set the C standard to C11
 target_compile_definitions(${PROJECT_NAME} PRIVATE PICO_CXX_STANDARD=11)

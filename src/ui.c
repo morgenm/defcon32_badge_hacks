@@ -9,10 +9,9 @@
 #include "pio/pinoutRp2350defcon.h"
 #include "hardware/regs/sio.h"
 #include "hardware/structs/sio.h"
+#include "timebase.h"
 
-//#include "usb.h"
-//#include "tusb.h"
-
+#include "usb.h"
 
 #define MENU_SELECTION_CHAR				0xBB /* RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK */
 
@@ -360,7 +359,7 @@ static uint_fast8_t uiPrvMenu(struct Canvas *cnv, uint_fast8_t curChoice, uint_f
 
 static void uiPrvReset(struct Canvas *cnv, bool invert)
 {
-	static const char windowTitle[] = "uGB v1.5.0";
+	static const char windowTitle[] = "MorgenBadge v0.1";
 	memset(cnv->framebuffer, invert ? 0xff : 0, cnv->w * cnv->h * DISP_BPP / 8);
 	
 	//draw title
@@ -560,45 +559,59 @@ static void uiPrvDrawTruncText(struct Canvas *cnv, int32_t r, int32_t c, uint32_
 	}
 }
 
-static void __attribute__((noinline)) uiPrvMorgenUSBEnum(struct Canvas *cnv) {
+static void __attribute__((noinline)) uiPrvCheckUSBConn(struct Canvas *cnv) {
 	uiPrvReset(cnv, false);
 
-	//tusb_init();
-
-	bool usbMounted = false;
-
-	// Tiny USB mount callback
-	void tud_mount_cb(void) {
-		usbMounted = true;
+	if(!isUsbMounted()) {
+		uiAlert(cnv, 
+					"No USB Connection Found!\n"
+				, DialogTypeOk);
+		return;
 	}
+	else {
+		uiAlert(cnv, 
+					"USB Connected!\n"
+				, DialogTypeOk);
+		return;
+	}
+}
 
-	// Tiny USB unmount callback
-	void tud_unmount_cb(void) {
-		usbMounted = false;
+static void __attribute__((noinline)) uiPrvUSBDucky(struct Canvas *cnv) {
+	uiPrvReset(cnv, false);
+
+	if(!isUsbMounted()) {
+		uiAlert(cnv, 
+					"Error: Check USB Connection!\n"
+				, DialogTypeOk);
+			return;
 	}
 
 	while(1) {
-		//uint8_t button = KEY_BIT_B;
-		int_fast8_t itemHeight;
+		int_fast8_t duckyTest = -1, backOption, itemHeight, selOption, numOptions=0;
 
 		uiPrvReset(cnv, false);
 		itemHeight = uiPrvGlyphHeight(cnv) + 1;
 
-		if(!usbMounted) {
-			uiPuts(cnv, cnv->h/2, 10, "Waiting for USB Connection...", -1);
+		// Ducky Test
+		duckyTest = numOptions++;
+		uiPuts(cnv, cnv->h - 2 * itemHeight, 10, "Ducky Test", -1);
+
+		//Back option
+		backOption = numOptions++;
+		uiPuts(cnv, cnv->h - 1 * itemHeight, 10, "Back", -1);
+
+		// See what option was chosen
+		selOption = uiPrvMenu(cnv, 0, numOptions, NULL);
+		if(selOption == duckyTest) {
+			usbDuckyTest();
+			uiAlert(cnv, 
+					"Running Ducky Test!\n"
+				, DialogTypeOk);
+			return;
 		}
-		else{
-			uiPuts(cnv, cnv->h/2, 10, "USB Device Enumeration In Progress...", -1);
+		else if(selOption == backOption) {
+			break;
 		}
-
-		//uiPuts(cnv, cnv->h/2, 10, "USB Device Enumeration In Progress...", -1);
-
-		//if(button == KEY_BIT_B) {
-			//break;
-		//}
-
-		// Perform enumeration
-		//tud_task();
 	}
 }
 
@@ -606,14 +619,17 @@ static void __attribute__((noinline)) uiPrvMorgenHacks(struct Canvas *cnv) {
 	uiPrvReset(cnv, false);
 
 	while(1) {
-		int_fast8_t usbEnumOption = -1, backOption, itemHeight, selOption, numOptions=0;
+		int_fast8_t usbEnumOption = -1, usbDuckyOption, backOption, itemHeight, selOption, numOptions=0;
 
 		uiPrvReset(cnv, false);
 		itemHeight = uiPrvGlyphHeight(cnv) + 1;
 
+		usbDuckyOption = numOptions++;
+		uiPuts(cnv, cnv->h - 3 * itemHeight, 10, "USB Ducky", -1);
+
 		// USB Device Enumeration option
 		usbEnumOption = numOptions++;
-		uiPuts(cnv, cnv->h - 2 * itemHeight, 10, "USB Device Enumeration", -1);
+		uiPuts(cnv, cnv->h - 2 * itemHeight, 10, "USB Connection Status", -1);
 
 		//Back option
 		backOption = numOptions++;
@@ -622,7 +638,10 @@ static void __attribute__((noinline)) uiPrvMorgenHacks(struct Canvas *cnv) {
 		// See what option was chosen
 		selOption = uiPrvMenu(cnv, 0, numOptions, NULL);
 		if(selOption == usbEnumOption) {
-			uiPrvMorgenUSBEnum(cnv);
+			uiPrvCheckUSBConn(cnv);
+		}
+		else if(selOption == usbDuckyOption) {
+			uiPrvUSBDucky(cnv);
 		}
 		else if(selOption == backOption) {
 			break;
