@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "cstdint": "c",
+        "cstdlib": "c",
+        "lcd.h": "c",
+        "piows2812.h": "c",
+        "pinoutrp2350defcon.h": "c",
+        "ui.h": "c"
+    }
+}
