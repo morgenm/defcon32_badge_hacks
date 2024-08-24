@@ -6,6 +6,7 @@
         "piows2812.h": "c",
         "pinoutrp2350defcon.h": "c",
         "ui.h": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "random": "c"
     }
 }

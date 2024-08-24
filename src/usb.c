@@ -1,8 +1,11 @@
+#include <stdlib.h>
+
 #include "usb.h"
 #include "tusb.h"
 #include "bsp/board_api.h"
 #include "usb_descriptors.h"
 #include "hid_keycodes.h"
+#include "ducky.h"
 //#include "pico/mutex.h"
 
 //bool usbMounted = false;
@@ -119,6 +122,23 @@ static void send_hid_report(uint8_t report_id, uint32_t mod, uint32_t key)
 
 void usbSendKey(uint8_t keycode, uint8_t modifier) {
     send_hid_report(REPORT_ID_KEYBOARD, modifier, keycode);
+    board_delay(5); // 5 ms delay
+
+    if(keycode == HID_KEY_SPACE) {
+        // Add more board delay for space key.
+        // Not sure why, but it breaks input without it.
+        board_delay(20); 
+    }
+
+    // Send empty report to release all keys
+    send_hid_report(REPORT_ID_KEYBOARD, 0, 0);
+    board_delay(5); // 5 ms delay
+
+    if(keycode == HID_KEY_SPACE) {
+        // Add more board delay for space key.
+        // Not sure why, but it breaks input without it.
+        board_delay(20); 
+    }
 }
 
 void usbSendString(const char *str) {
@@ -141,7 +161,29 @@ void usbSendString(const char *str) {
 }
 
 
-void usbDuckyTest() {
-    const char *s = "Hello world!!!!!";
-    usbSendString(s);
+bool usbDuckyTest() {
+    uint8_t *keycodes = malloc(MAX_SCRIPT_KEYCODES * sizeof(uint8_t));
+    uint8_t *mods = malloc(MAX_SCRIPT_KEYCODES * sizeof(uint8_t));
+    int numKeycodes = scriptToKeyPresses(example_script, &keycodes, &mods);
+
+    if(numKeycodes == -1) {
+        printf("Error parsing script\n");
+        return false;
+    }
+
+    for (int i = 0; i < numKeycodes; i++) {
+        if(keycodes[i] == DELAY_CODE) {
+            //board_delay(keycodes[i+1]);
+            continue;
+        }
+        usbSendKey(keycodes[i], mods[i]);
+        //uint8_t keycode = 0, mod = 0;
+        //asciiToKeyCode('a', &keycode, &mod);
+        //usbSendKey(keycode, mod);
+        
+    }
+
+    free(keycodes);
+    free(mods);
+    return true;
 }

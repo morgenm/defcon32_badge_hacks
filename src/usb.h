@@ -6,4 +6,4 @@ void usbHIDInit();
 void usbTask();
 bool isUsbMounted();
 
-void usbDuckyTest();
+bool usbDuckyTest();

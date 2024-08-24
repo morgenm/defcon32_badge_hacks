@@ -4,10 +4,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-//#include "hid_keycodes.h"
+#include "ducky.h"
+#include "hid_keycodes.h"
+#include "tusb.h" // Temporary while fixing HID_SPACE
 
 char example_script[] = "\
-STRING cooltest\n\
+STRING cooltestechohello echo hello\n\
 WINDOWS r\n\
 REM A slightly more advanced Hello, World! for Windows\n\
 DELAY 3000\n\
@@ -18,11 +20,6 @@ REM Open powershell with our message\n\
 STRING powershell \"echo 'Hello, World!'; pause\"\n\
 ENTER\n\
 ";
-
-void asciiToKeyCode(char c, uint8_t *keycode, uint8_t *mod) {
-    *keycode = (uint8_t)c;
-    *mod = 0;
-}
 
 enum TOKEN {
     STRING,
@@ -102,7 +99,18 @@ int tokenizeScript(char *script, char **outTokens, enum TOKEN *outTokenTypes) {
     return numTokens;
 }
 
-bool parseTokens(char **tokens, enum TOKEN *token_types, int numTokens) {
+bool addKeycode(uint8_t *keycodes, uint8_t *mods, int *keyIdx, uint8_t keycode, uint8_t mod) {
+    if(*keyIdx >= MAX_SCRIPT_KEYCODES) {
+        return false;
+    }
+    
+    keycodes[*keyIdx] = keycode;
+    mods[*keyIdx] = mod;
+    *keyIdx += 1;
+    return true;
+}
+
+bool parseTokens(char **tokens, enum TOKEN *token_types, int numTokens, uint8_t *keycodes, uint8_t *mods, int *numKeyCodes) {
     bool syntaxError = false;
     printf("\nPARSING!\n");
     int keyIdx = 0; // Index into output keycodes
@@ -122,7 +130,22 @@ bool parseTokens(char **tokens, enum TOKEN *token_types, int numTokens) {
                 if(token_types[i] == LITERAL) {
                     char *token = tokens[i];
                     printf("Keycode literal added: %s\n", token);
-                    keyIdx++;
+                    for(int j=0; j<strlen(token); j++) {
+                        uint8_t keycode;
+                        uint8_t mod;
+                        asciiToKeyCode(token[j], &keycode, &mod);
+
+                        if(token[j] == ' ') {
+                            keycode = HID_KEY_SPACE;
+                            mod = 0;
+                        }
+
+                        if(!addKeycode(keycodes, mods, &keyIdx, keycode, mod)) {
+                            printf("ERROR: MAX SCRIPT KEYCODES EXCEEDED\n");
+                            syntaxError = true;
+                            break;
+                        }
+                    }
                 } else {
                     printf("SYNTAX ERROR: EXPECTED LITERAL AFTER STRING\n");
                     syntaxError = true;
@@ -142,13 +165,13 @@ bool parseTokens(char **tokens, enum TOKEN *token_types, int numTokens) {
                 if(token_types[i] == CHAR) {
                     char *token = tokens[i];
                     printf("Keycode added: WIN+%c\n", token[0]);
-                    keyIdx++;
+                    //keyIdx++;
                 } else {
                     printf("SYNTAX ERROR: EXPECTED LITERAL AFTER WINDOWS\n");
                     syntaxError = true;
                 }
 
-                keyIdx++;
+                //keyIdx++;
 
                 break;
 
@@ -202,7 +225,7 @@ bool parseTokens(char **tokens, enum TOKEN *token_types, int numTokens) {
 
             case ENTER:
                 printf("Keycode added: ENTER\n");
-                keyIdx++;
+                //keyIdx++;
                 break;
 
             default:
@@ -213,6 +236,7 @@ bool parseTokens(char **tokens, enum TOKEN *token_types, int numTokens) {
 
         i++;
     }
+    *numKeyCodes = keyIdx;
     return !syntaxError;
 }
 
@@ -220,12 +244,8 @@ bool parseTokens(char **tokens, enum TOKEN *token_types, int numTokens) {
 Convert string containing a ducky script to 
 array of HID keycodes.
 */
-bool scriptToKeyPresses(char *script, uint8_t **keycodes) {
+int scriptToKeyPresses(char *script, uint8_t **keycodes, uint8_t **mods) {
     size_t len = strlen(script);
-    *keycodes = malloc(sizeof(uint8_t) * len);
-    if (*keycodes == NULL) {
-        return false;
-    }
 
     // Tokenize the script
     printf("\nTokenizing!\n");
@@ -234,25 +254,12 @@ bool scriptToKeyPresses(char *script, uint8_t **keycodes) {
     int numTokens = tokenizeScript(script, tokens, token_types);
     
     // Parse tokens to generate keycodes
-    bool parseSuccess = parseTokens(tokens, token_types, numTokens);
+    int numKeyCodes = -1;
+    bool parseSuccess = parseTokens(tokens, token_types, numTokens, *keycodes, *mods, &numKeyCodes);
 
-
-    return parseSuccess;
-}
-
-int main() {
-    printf("%s", example_script);
-
-    uint8_t *keycodes = NULL;
-    if (scriptToKeyPresses(example_script, &keycodes)) {
-        for (size_t i = 0; i < strlen(example_script); i++) {
-            printf("%d ", keycodes[i]);
-        }
-        printf("\n");
-        free(keycodes);
-    } else {
-        printf("Error parsing script\n");
+    if(!parseSuccess) {
+        return -1;
     }
 
-    return 0;
+    return numKeyCodes;
 }

@@ -603,10 +603,18 @@ static void __attribute__((noinline)) uiPrvUSBDucky(struct Canvas *cnv) {
 		// See what option was chosen
 		selOption = uiPrvMenu(cnv, 0, numOptions, NULL);
 		if(selOption == duckyTest) {
-			usbDuckyTest();
-			uiAlert(cnv, 
-					"Running Ducky Test!\n"
+			
+			if(!usbDuckyTest()) {
+				uiAlert(cnv, 
+					"Ducky Test Failed!\n"
 				, DialogTypeOk);
+			}
+			else {
+				uiAlert(cnv, 
+					"Ducky Test Passed!\n"
+				, DialogTypeOk);
+			}
+
 			return;
 		}
 		else if(selOption == backOption) {
