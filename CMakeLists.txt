@@ -12,7 +12,9 @@ pico_sdk_init()
 
 # rest of your project
 # Add the source files to your project
-add_executable(${PROJECT_NAME} src/main.c src/pio/pioWS2812.c src/timebase.c src/display.c src/ui.c src/chars.c src/fonts.c src/utf.c src/printf.c src/input.c src/usb_descriptors.c src/usb.c)
+add_executable(${PROJECT_NAME} src/main.c src/pio/pioWS2812.c 
+    src/timebase.c src/display.c src/ui.c src/chars.c src/fonts.c src/utf.c 
+    src/printf.c src/input.c src/usb_descriptors.c src/usb.c src/hid_keycodes.c)
 
 target_include_directories(${PROJECT_NAME} PRIVATE src/)
 
