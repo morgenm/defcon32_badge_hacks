@@ -1,5 +1,6 @@
 {
     "files.associations": {
+<<<<<<< HEAD
         "cstdint": "c",
         "cstdlib": "c",
         "lcd.h": "c",
@@ -8,5 +9,8 @@
         "ui.h": "c",
         "string.h": "c",
         "random": "c"
+=======
+        "accessctrl.h": "c"
+>>>>>>> master
     }
 }
