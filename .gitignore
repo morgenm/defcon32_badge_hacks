@@ -2,3 +2,4 @@
 uGB
 *.bin
 build/
+.vscode
