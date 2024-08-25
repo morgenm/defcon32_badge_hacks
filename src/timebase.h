@@ -15,4 +15,6 @@ uint64_t getTime(void);
 void delayMsec(uint32_t msec);
 void delayUsec(uint32_t usec);
 
+#define TICKS_PER_SECOND 125000000U
+
 #endif

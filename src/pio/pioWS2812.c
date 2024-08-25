@@ -1,9 +1,11 @@
 #include "hardware/regs/dreq.h"
 #include "pinoutRp2350defcon.h"
+#include "hardware/dma.h"
+#include "hardware/pio.h"
 #include "pioWS2812.h"
 #include "timebase.h"
-#include "util/printf.h"
-#include "2350.h"
+//#include "util/printf.h"
+//#include "2350.h"
 
 
 static uint32_t mLedsBuffer[NUM_WS2812s * 3];	//each word repersents 24 bits sent = 8 bits of data. thus 3 per LED
@@ -62,7 +64,7 @@ void ws2812init(void)	//PIO0.SM1, last instr in instr memory
 	//"code"
 	MY_PIO->instr_mem[pc++] = I_OUT(0, 0, OUT_DST_PINS, 1);
 
-	pr("ws2812: using %u instrs, next free is %u\n", pc - WS2812_PIO_FIRST_USED_PC, pc);
+	//pr("ws2812: using %u instrs, next free is %u\n", pc - WS2812_PIO_FIRST_USED_PC, pc);
 
 	//config
 	MY_PIO->sm[WS2812_PIO_SM].clkdiv = (clkDiv << PIO_SM0_CLKDIV_INT_LSB);
