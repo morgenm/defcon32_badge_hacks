@@ -162,8 +162,8 @@ void usbSendString(const char *str) {
 
 
 bool usbDuckyTest() {
-    uint8_t *keycodes = malloc(MAX_SCRIPT_KEYCODES * sizeof(uint8_t));
-    uint8_t *mods = malloc(MAX_SCRIPT_KEYCODES * sizeof(uint8_t));
+    uint32_t *keycodes = malloc(MAX_SCRIPT_KEYCODES * sizeof(uint32_t));
+    uint32_t *mods = malloc(MAX_SCRIPT_KEYCODES * sizeof(uint32_t));
     int numKeycodes = scriptToKeyPresses(example_script, &keycodes, &mods);
 
     if(numKeycodes == -1) {
@@ -173,14 +173,9 @@ bool usbDuckyTest() {
 
     for (int i = 0; i < numKeycodes; i++) {
         if(keycodes[i] == DELAY_CODE) {
-            //board_delay(keycodes[i+1]);
-            continue;
+            board_delay(mods[i]);
         }
         usbSendKey(keycodes[i], mods[i]);
-        //uint8_t keycode = 0, mod = 0;
-        //asciiToKeyCode('a', &keycode, &mod);
-        //usbSendKey(keycode, mod);
-        
     }
 
     free(keycodes);

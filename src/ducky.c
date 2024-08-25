@@ -9,7 +9,7 @@
 #include "tusb.h" // Temporary while fixing HID_SPACE
 
 char example_script[] = "\
-STRING cooltestechohello echo hello\n\
+STRING Hello. Testing string input!\n\
 WINDOWS r\n\
 REM A slightly more advanced Hello, World! for Windows\n\
 DELAY 3000\n\
@@ -17,7 +17,7 @@ REM Open the Run dialog\n\
 WINDOWS r\n\
 DELAY 1000\n\
 REM Open powershell with our message\n\
-STRING powershell \"echo 'Hello, World!'; pause\"\n\
+STRING powershell \"echo 'Hello, World! You have been hacked!'; pause\"\n\
 ENTER\n\
 ";
 
@@ -99,7 +99,7 @@ int tokenizeScript(char *script, char **outTokens, enum TOKEN *outTokenTypes) {
     return numTokens;
 }
 
-bool addKeycode(uint8_t *keycodes, uint8_t *mods, int *keyIdx, uint8_t keycode, uint8_t mod) {
+bool addKeycode(uint32_t *keycodes, uint32_t *mods, int *keyIdx, uint32_t keycode, uint32_t mod) {
     if(*keyIdx >= MAX_SCRIPT_KEYCODES) {
         return false;
     }
@@ -110,7 +110,7 @@ bool addKeycode(uint8_t *keycodes, uint8_t *mods, int *keyIdx, uint8_t keycode, 
     return true;
 }
 
-bool parseTokens(char **tokens, enum TOKEN *token_types, int numTokens, uint8_t *keycodes, uint8_t *mods, int *numKeyCodes) {
+bool parseTokens(char **tokens, enum TOKEN *token_types, int numTokens, uint32_t *keycodes, uint32_t *mods, int *numKeyCodes) {
     bool syntaxError = false;
     printf("\nPARSING!\n");
     int keyIdx = 0; // Index into output keycodes
@@ -165,13 +165,20 @@ bool parseTokens(char **tokens, enum TOKEN *token_types, int numTokens, uint8_t 
                 if(token_types[i] == CHAR) {
                     char *token = tokens[i];
                     printf("Keycode added: WIN+%c\n", token[0]);
-                    //keyIdx++;
+
+                    uint8_t keycode, mod;
+                    asciiToKeyCode(token[0], &keycode, &mod);
+                    mod = KEYBOARD_MODIFIER_LEFTGUI; // Windows key
+                    
+                    if(!addKeycode(keycodes, mods, &keyIdx, keycode, mod)) {
+                        printf("ERROR: MAX SCRIPT KEYCODES EXCEEDED\n");
+                        syntaxError = true;
+                        break;
+                    }
                 } else {
                     printf("SYNTAX ERROR: EXPECTED LITERAL AFTER WINDOWS\n");
                     syntaxError = true;
                 }
-
-                //keyIdx++;
 
                 break;
 
@@ -203,7 +210,6 @@ bool parseTokens(char **tokens, enum TOKEN *token_types, int numTokens, uint8_t 
 
                 break;
 
-            // TODO: Add delay when running script somehow!
             case DELAY:
                 i++;
                 if(i >= numTokens) {
@@ -216,6 +222,12 @@ bool parseTokens(char **tokens, enum TOKEN *token_types, int numTokens, uint8_t 
                     char *token = tokens[i];
                     int delay = atoi(token);
                     printf("Delay: %d\n", delay);
+                    
+                    if(!addKeycode(keycodes, mods, &keyIdx, DELAY_CODE, delay)) {
+                        printf("ERROR: MAX SCRIPT KEYCODES EXCEEDED\n");
+                        syntaxError = true;
+                        break;
+                    }
                 } else {
                     printf("SYNTAX ERROR: EXPECTED INT AFTER DELAY\n");
                     syntaxError = true;
@@ -225,7 +237,11 @@ bool parseTokens(char **tokens, enum TOKEN *token_types, int numTokens, uint8_t 
 
             case ENTER:
                 printf("Keycode added: ENTER\n");
-                //keyIdx++;
+                if(!addKeycode(keycodes, mods, &keyIdx, HID_KEY_ENTER, 0)) {
+                    printf("ERROR: MAX SCRIPT KEYCODES EXCEEDED\n");
+                    syntaxError = true;
+                    break;
+                }
                 break;
 
             default:
@@ -244,7 +260,7 @@ bool parseTokens(char **tokens, enum TOKEN *token_types, int numTokens, uint8_t 
 Convert string containing a ducky script to 
 array of HID keycodes.
 */
-int scriptToKeyPresses(char *script, uint8_t **keycodes, uint8_t **mods) {
+int scriptToKeyPresses(char *script, uint32_t **keycodes, uint32_t **mods) {
     size_t len = strlen(script);
 
     // Tokenize the script

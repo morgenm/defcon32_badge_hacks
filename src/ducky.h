@@ -5,4 +5,4 @@
 
 extern char example_script[];
 
-int scriptToKeyPresses(char *script, uint8_t **keycodes, uint8_t **mods);
+int scriptToKeyPresses(char *script, uint32_t **keycodes, uint32_t **mods);
